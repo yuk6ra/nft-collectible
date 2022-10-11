@@ -1,7 +1,8 @@
-// run.js
+// deploy.js
 async function main() {
   // あなたのコレクションの Base Token URI（JSON の CID）に差し替えてください
-  const baseTokenURI = "ipfs://QmXUP1fVMjbD9rcXnBL2fzFZ9zAJgCMey3tzdBw4z6X8VQ/";
+  // 注: 十分な NFT を確保するために、下記のサンプル Token URI を使用しても問題ありません。
+  const baseTokenURI = "ipfs://QmZbWNKJPAjxXuNFSEaksCJVd1M6DaKQViJBYPK2BdpDEP/";
 
   // オーナー/デプロイヤーのウォレットアドレスを取得する
   const [owner] = await hre.ethers.getSigners();
@@ -18,18 +19,7 @@ async function main() {
   // コントラクトアドレスをターミナルに出力
   console.log("Contract deployed to:", contract.address);
 
-  // NFTを 10 点、コントラクト所有者のためにキープする
-  let txn = await contract.reserveNFTs();
-  await txn.wait();
-  console.log("10 NFTs have been reserved");
-
-  // 0.03 ETH を送信して3つ NFT を mint する
-  txn = await contract.mintNFTs(3, {
-    value: hre.ethers.utils.parseEther("0.03"),
-  });
-  await txn.wait();
-
-  // コントラクト所有者の保有するtokenIdsを取得
+  // 所有者の全トークンIDを取得
   let tokens = await contract.tokensOfOwner(owner.address);
   console.log("Owner has tokens: ", tokens);
 }
@@ -40,3 +30,4 @@ main()
     console.error(error);
     process.exit(1);
   });
+const { utils } = require("ethers");
